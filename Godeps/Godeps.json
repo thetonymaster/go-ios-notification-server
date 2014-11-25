@@ -1,0 +1,8 @@
+{
+	"ImportPath": "_/Users/crowdint/projects/golang/src/github.com/thetonymaster/go-ios-notification-server",
+	"GoVersion": "go1.3.1",
+	"Packages": [
+		"github.com/thetonymaster/go-ios-notification-server"
+	],
+	"Deps": []
+}
