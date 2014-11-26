@@ -6,7 +6,10 @@ import "github.com/streadway/amqp"
 type Subscriber struct {
 	ChannelName     string
 	URL             string
+	channel         *amqp.Channel
+	connection      *amqp.Connection
 	DeliveryChannel <-chan amqp.Delivery
+	Close           chan bool
 }
 
 //NewSubscriber returns a new publisher struct and it's possible errors
@@ -33,11 +36,24 @@ func NewSubscriber(channel, chtype, url, queuename, consumer string) (*Subscribe
 
 	msgs, err := getDeliveryChannel(ch, q, consumer, true, false, false, false)
 
+	closechannel := make(chan bool, 1)
+
 	subscriber := &Subscriber{
 		ChannelName:     channel,
 		URL:             url,
+		channel:         ch,
+		connection:      conn,
 		DeliveryChannel: msgs,
+		Close:           closechannel,
 	}
+
+	go func() {
+		select {
+		case <-subscriber.Close:
+			subscriber.connection.Close()
+			subscriber.channel.Close()
+		}
+	}()
 
 	return subscriber, nil
 }

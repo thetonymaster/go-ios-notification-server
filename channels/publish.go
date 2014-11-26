@@ -12,6 +12,7 @@ type Publisher struct {
 	URL         string
 	channel     *amqp.Channel
 	connection  *amqp.Connection
+	Close       chan bool
 }
 
 //NewPublisher returns a new Publisher struct
@@ -25,13 +26,25 @@ func NewPublisher(channel, chtype, url string) (*Publisher, error) {
 	if err != nil {
 		return nil, err
 	}
+	closechannel := make(chan bool, 1)
 
 	publisher := &Publisher{
 		ChannelName: channel,
 		URL:         url,
 		channel:     ch,
 		connection:  conn,
+		Close:       closechannel,
 	}
+
+	go func() {
+		select {
+		case <-publisher.Close:
+			publisher.connection.Close()
+			publisher.channel.Close()
+
+		}
+	}()
+
 	return publisher, nil
 
 }
