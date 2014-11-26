@@ -1,12 +1,16 @@
 package channels
 
-import "github.com/streadway/amqp"
+import (
+	"encoding/json"
+
+	"github.com/streadway/amqp"
+)
 
 //Publisher contains the necessary information to create a channel
 type Publisher struct {
 	ChannelName string
 	URL         string
-	Channel     *amqp.Channel
+	channel     *amqp.Channel
 	connection  *amqp.Connection
 }
 
@@ -25,7 +29,7 @@ func NewPublisher(channel, chtype, url string) (*Publisher, error) {
 	publisher := &Publisher{
 		ChannelName: channel,
 		URL:         url,
-		Channel:     ch,
+		channel:     ch,
 		connection:  conn,
 	}
 	return publisher, nil
@@ -54,4 +58,24 @@ func getChannel(channel, chtype string, durable, autodeleted, internal, nowait b
 
 	return ch, nil
 
+}
+
+//Publish sends a message to the queue
+func (publisher *Publisher) Publish(v interface{}, routingkey string, mandatory, immediate bool) error {
+
+	body, err := json.Marshal(v)
+
+	err = publisher.channel.Publish(
+		publisher.ChannelName,
+		routingkey,
+		mandatory,
+		immediate,
+		amqp.Publishing{
+			ContentType: "application/json",
+			Body:        body,
+		})
+	if err != nil {
+		return err
+	}
+	return nil
 }
