@@ -17,8 +17,8 @@ var _ = Describe("Channel", func() {
 		err        error
 	)
 	BeforeEach(func() {
-		rmqtx := os.Getenv("RMQ_TX")
-		rmqrx := os.Getenv("RMQ_RX")
+		rmqtx := os.Getenv("RABBITMQ_BIGWIG_TX_URL")
+		rmqrx := os.Getenv("RABBITMQ_BIGWIG_RX_URL")
 		publisher, err = NewPublisher("test_channel", "fanout", rmqtx)
 		subscriber, err = NewSubscriber("test_channel", "fanout", rmqrx, "", "")
 	})
@@ -27,7 +27,7 @@ var _ = Describe("Channel", func() {
 		Context("With basic parameters", func() {
 			It("Should be not nil", func() {
 				Expect(publisher).ToNot(BeNil())
-				Expect(publisher.URL).To(Equal(os.Getenv("RMQ_TX")))
+				Expect(publisher.URL).To(Equal(os.Getenv("RABBITMQ_BIGWIG_TX_URL")))
 				Expect(publisher.ChannelName).To(Equal("test_channel"))
 			})
 			It("Should not return an error", func() {
@@ -57,7 +57,7 @@ var _ = Describe("Channel", func() {
 		Context("With basic parameters", func() {
 			It("Should be not nil", func() {
 				Expect(subscriber).ToNot(BeNil())
-				Expect(subscriber.URL).To(Equal(os.Getenv("RMQ_TX")))
+				Expect(subscriber.URL).To(Equal(os.Getenv("RABBITMQ_BIGWIG_RX_URL")))
 				Expect(subscriber.ChannelName).To(Equal("test_channel"))
 			})
 			It("Should not return an error", func() {

@@ -4,5 +4,14 @@
 	"Packages": [
 		"github.com/thetonymaster/go-ios-notification-server"
 	],
-	"Deps": []
+	"Deps": [
+			{
+				"ImportPath":"github.com/gorilla/mux",
+				"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
+			},
+			{
+				"ImportPath":"github.com/streadway/amqp",
+				"Rev": "6ffc9248c4b16699477e7411084c2402f2f0c351"
+			}
+		]
 }
