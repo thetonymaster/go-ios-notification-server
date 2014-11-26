@@ -6,7 +6,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-//Publisher contains the necessary information to create a channel
+//Publisher contains the necessary information to send messages a channel
 type Publisher struct {
 	ChannelName string
 	URL         string
@@ -33,30 +33,6 @@ func NewPublisher(channel, chtype, url string) (*Publisher, error) {
 		connection:  conn,
 	}
 	return publisher, nil
-
-}
-
-func getChannel(channel, chtype string, durable, autodeleted, internal, nowait bool, conn *amqp.Connection) (*amqp.Channel, error) {
-
-	ch, err := conn.Channel()
-	if err != nil {
-		return nil, err
-	}
-
-	err = ch.ExchangeDeclare(
-		channel,     // name
-		chtype,      // type
-		durable,     // durable
-		autodeleted, // auto-deleted
-		internal,    // internal
-		nowait,      // no-wait
-		nil,         // arguments
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	return ch, nil
 
 }
 
